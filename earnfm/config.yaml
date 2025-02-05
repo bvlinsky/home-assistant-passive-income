@@ -1,0 +1,15 @@
+name: "EarnFM"
+slug: "earnfm"
+description: "EarnFM lets you generate passive income online by simply sharing your internet connection"
+version: "latest"
+init: false
+legacy: true
+image: earnfm/earnfm-client
+arch:
+  - amd64
+  - aarch64
+  - armv7
+options:
+  EARNFM_TOKEN: ""
+schema:
+  EARNFM_TOKEN: str
