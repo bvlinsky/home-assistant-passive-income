@@ -1,4 +1,6 @@
-# Home Assistant Passive Income Add-ons
+# 💰 Home Assistant Passive Income Add-ons
+
+[![Open your Home Assistant instance and show the add app repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fbvlinsky%2Fhome-assistant-passive-income)
 
 This repository contains a collection of Home Assistant add-ons
 for running various passive income applications on a Home Assistant.
@@ -42,7 +44,7 @@ It should also be compatible with other Home Assistant instances, regardless of 
 
 If you encounter any issues or have questions, please let me know by opening an issue in the repository.
 
-## Contributing
+## 🤝️ Contributing
 
 Contributions from all sources are welcome, including AI-assisted and automated contributions.
 If something feels off or could be better, open a short issue or submit a pull request.
