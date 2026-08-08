@@ -2,7 +2,7 @@ FROM alpine:latest
 
 RUN apk add --no-cache bash
 
-COPY --from=iproyal/pawns-cli:0.36.2 /pawns-cli /pawns-cli
+COPY --from=iproyal/pawns-cli:0.36.5 /pawns-cli /pawns-cli
 
 ENV email ""
 ENV password ""

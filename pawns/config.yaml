@@ -1,7 +1,7 @@
 name: "Pawns.app"
 slug: "pawns"
 description: "Extra Income Made Easy"
-version: "0.36.2"
+version: "0.36.5"
 init: false
 legacy: true
 arch:
