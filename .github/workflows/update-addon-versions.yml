@@ -17,6 +17,8 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: main
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Install yq
         run: |
@@ -72,6 +74,16 @@ jobs:
 
             if [ "$local_ver" != "$remote_ver" ]; then
               yq -i ".version = \"$remote_ver\"" "$cfg"
+
+              # Sync Dockerfile image tag — only when the image is already pinned
+              # (i.e. not :latest). CalVer addons using :latest are left untouched.
+              dockerfile="$addon/Dockerfile"
+              if [ -f "$dockerfile" ] && grep -qE "(FROM|COPY --from)[[:space:]]+${img}:[^l]" "$dockerfile"; then
+                new_ver=$(yq '.version' "$cfg")
+                sed -i "s|\(COPY --from=${img}:\)[^ ]*|\1${new_ver}|g" "$dockerfile"
+                sed -i "s|\(FROM ${img}:\)[^ ]*|\1${new_ver}|g" "$dockerfile"
+              fi
+
               echo "  → updated $local_ver → $remote_ver"
               UPDATED="$UPDATED $addon"
               echo "- Bumped [${name}](${url}) to \`${remote_ver}\` (from \`${local_ver}\`)" >> "$RELEASE_BODY_FILE"
@@ -103,7 +115,7 @@ jobs:
         with:
           branch: main
           commit_message: ${{ steps.check_update.outputs.commit_message }}
-          file_pattern: "*/config.yaml */config.yml"
+          file_pattern: "*/config.yaml */config.yml */Dockerfile"
           tag_name: ${{ steps.check_update.outputs.new_tag }}
 
       - name: Create GitHub Release
