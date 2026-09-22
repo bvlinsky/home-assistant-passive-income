@@ -1,13 +1,13 @@
 name: "Repocket"
 slug: "repocket"
 description: "Turn your unused internet into cash"
+image: repocket/repocket
+version: "1.2.0"
 init: false
 legacy: true
 arch:
   - aarch64
   - amd64
-version: "1.1.46"
-image: repocket/repocket
 options:
   RP_EMAIL: ""
   RP_API_KEY: ""

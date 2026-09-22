@@ -1,14 +1,14 @@
 name: "PacketStream"
 slug: "packetstream"
 description: "Earn passive income by sharing your unused bandwidth"
+image: packetstream/psclient
+version: "v2.4.3"
 init: false
 legacy: true
 arch:
   - aarch64
   - amd64
   - i386
-version: "latest"
-image: packetstream/psclient
 options:
   CID: "6eJ7"
 schema:

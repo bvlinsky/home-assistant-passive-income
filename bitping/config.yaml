@@ -1,10 +1,10 @@
 name: "Bitping"
 slug: "bitping"
 description: "Earn money with your spare internet"
-version: "26.7.29-1"
+image: bitping/bitpingd
+version: "26.8.17-1"
 init: false
 legacy: true
-image: bitping/bitpingd
 arch:
   - amd64
   - aarch64

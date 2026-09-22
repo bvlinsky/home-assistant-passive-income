@@ -1,12 +1,11 @@
 name: "Proxyrack"
 slug: "proxyrack"
 description: "Earn Rewards by Sharing Your Bandwidth"
+version: "2025.07.13"
 init: false
 legacy: true
 arch:
   - amd64
-version: "latest"
-image: proxyrack/pop
 options:
   UUID: ""
   API_KEY: ""

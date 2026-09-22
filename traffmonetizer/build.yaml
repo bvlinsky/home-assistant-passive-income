@@ -1,7 +1,4 @@
-{
-  "build_from": {
-    "amd64": "traffmonetizer/cli_v2:latest",
-    "aarch64": "traffmonetizer/cli_v2:arm64v8",
-    "armv7": "traffmonetizer/cli_v2:arm32v7"
-  },
-}
+build_from:
+  amd64: traffmonetizer/cli_v2:latest
+  aarch64: traffmonetizer/cli_v2:arm64v8
+  armv7: traffmonetizer/cli_v2:arm32v7
