@@ -1,0 +1,113 @@
+name: Check and bump addon versions
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-versions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Check and update addon versions
+        id: check_update
+        run: |
+          set -euo pipefail
+
+          ADDONS=(
+            "bitping bitping/bitpingd"
+            "earnapp madereddy/earnapp"
+            "earnfm earnfm/earnfm-client"
+            "grass mrcolorrain/grass-node"
+            "honeygain honeygain/honeygain"
+            "packetstream packetstream/psclient"
+            "pawns iproyal/pawns-cli"
+            "proxyrack proxyrack/pop"
+            "repocket repocket/repocket"
+            "traffmonetizer traffmonetizer/cli_v2"
+          )
+
+          get_remote_version() {
+            local img="$1"
+            local json
+            json=$(curl -s "https://hub.docker.com/v2/repositories/$img/tags?page_size=25")
+            local tag
+            tag=$(echo "$json" | jq -r '.results[].name' | grep -E '^(v?[0-9])' | grep -vE 'test|cache|staging' | sort -V | tail -n 1)
+            if [ -z "$tag" ]; then
+              tag=$(echo "$json" | jq -r '(.results[] | select(.name == "latest") | .last_updated[:10] | gsub("-"; ".")) // empty')
+            fi
+            echo "${tag:-unknown}"
+          }
+
+          UPDATED=""
+
+          for item in "${ADDONS[@]}"; do
+            set -- $item
+            addon=$1
+            img=$2
+
+            cfg="$addon/config.yaml"
+            [ ! -f "$cfg" ] && cfg="$addon/config.yml"
+
+            local_ver=$(yq '.version' "$cfg")
+            remote_ver=$(get_remote_version "$img")
+
+            echo "$addon: local=$local_ver remote=$remote_ver"
+
+            if [ "$remote_ver" = "unknown" ]; then
+              echo "  → skipped (fetch failed)"
+              continue
+            fi
+
+            if [ "$local_ver" != "$remote_ver" ]; then
+              yq -i ".version = \"$remote_ver\"" "$cfg"
+              echo "  → updated $local_ver → $remote_ver"
+              UPDATED="$UPDATED $addon"
+            fi
+          done
+
+          UPDATED="${UPDATED# }"
+          echo "updated=$UPDATED" >> "$GITHUB_OUTPUT"
+
+          # Auto-increment patch version for the repo tag
+          LATEST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
+          IFS='.' read -r major minor patch <<< "${LATEST_TAG:-0.0.0}"
+          NEW_TAG="$major.$minor.$((patch + 1))"
+          echo "new_tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$UPDATED" ]; then
+            echo "commit_message=chore: update addon versions ($UPDATED)" >> "$GITHUB_OUTPUT"
+          else
+            echo "commit_message=chore: no addon updates" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push if changed
+        id: auto_commit
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: main
+          commit_message: ${{ steps.check_update.outputs.commit_message }}
+          file_pattern: "*/config.yaml */config.yml"
+          tag_name: ${{ steps.check_update.outputs.new_tag }}
+
+      - name: Create GitHub Release
+        if: steps.auto_commit.outputs.changes_detected == 'true'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.check_update.outputs.new_tag }}
+          name: ${{ steps.check_update.outputs.new_tag }}
+          generate_release_notes: true
