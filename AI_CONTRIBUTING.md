@@ -17,6 +17,10 @@ This repository accepts AI-assisted and automated contributions.
 - Fix inconsistent naming or formatting
 - Suggest configuration improvements
 
+## AI Rules and Conventions
+
+Before proposing changes to add-ons, please review the rules in [AGENTS.md](/AGENTS.md) regarding mandatory add-on versioning and Docker image synchronization.
+
 ## Issue Style
 
 Short, open-ended issues are acceptable here.
