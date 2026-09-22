@@ -17,15 +17,15 @@ in setting up multiple passive income streams with minimal technical effort.
 Note! These are referral links, and by signing up through them,
 you directly contribute to future updates and maintenance.
 
-- [Honeygain](https://join.honeygain.com/BULINCBB47)
 - [EarnApp](https://earnapp.com/i/4LLxaYrb)
+- [Honeygain](https://join.honeygain.com/BULINCBB47)
+- [PacketStream](https://packetstream.io/?psr=6eJ7)
+- [Repocket](https://link.repocket.com/TLMq)
 - [Pawns.app](https://pawns.app/?r=7359984)
 - [ProxyRack](https://peer.proxyrack.com/ref/7fx0rj00pt1noye23c7r2gw1sok8utlhhsjdmwys)
-- [Grass](https://app.grass.io/register?referralCode=nQQpxyv6mNel0H8)
 - [Traffmonetizer](https://traffmonetizer.com/?aff=1805975)
-- [Repocket](https://link.repocket.com/TLMq)
-- [PacketStream](https://packetstream.io/?psr=6eJ7)
 - [earn.fm](https://earn.fm/ref/JEDRBQEQ)
+- [Grass](https://app.grass.io/register?referralCode=nQQpxyv6mNel0H8)
 - [BitPing](https://bitping.com/earn)
 
 ## ⚙️ Installation Guide

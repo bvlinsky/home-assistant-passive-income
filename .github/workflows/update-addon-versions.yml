@@ -2,7 +2,7 @@ name: Check and bump addon versions
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '0 4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -28,37 +28,34 @@ jobs:
         run: |
           set -euo pipefail
 
+          # addon_dir | docker_image | display_name | referral_url
           ADDONS=(
-            "bitping bitping/bitpingd"
-            "earnapp madereddy/earnapp"
-            "earnfm earnfm/earnfm-client"
-            "grass mrcolorrain/grass-node"
-            "honeygain honeygain/honeygain"
-            "packetstream packetstream/psclient"
-            "pawns iproyal/pawns-cli"
-            "proxyrack proxyrack/pop"
-            "repocket repocket/repocket"
-            "traffmonetizer traffmonetizer/cli_v2"
+            "earnapp|madereddy/earnapp|EarnApp|https://earnapp.com/i/4LLxaYrb"
+            "honeygain|honeygain/honeygain|Honeygain|https://join.honeygain.com/BULINCBB47"
+            "packetstream|packetstream/psclient|PacketStream|https://packetstream.io/?psr=6eJ7"
+            "repocket|repocket/repocket|Repocket|https://link.repocket.com/TLMq"
+            "pawns|iproyal/pawns-cli|Pawns.app|https://pawns.app/?r=7359984"
+            "earnfm|earnfm/earnfm-client|earn.fm|https://earn.fm/ref/JEDRBQEQ"
+            "proxyrack|proxyrack/pop|ProxyRack|https://peer.proxyrack.com/ref/7fx0rj00pt1noye23c7r2gw1sok8utlhhsjdmwys"
+            "traffmonetizer|traffmonetizer/cli_v2|Traffmonetizer|https://traffmonetizer.com/?aff=1805975"
+            "grass|mrcolorrain/grass-node|Grass|https://app.grass.io/register?referralCode=nQQpxyv6mNel0H8"
+            "bitping|bitping/bitpingd|BitPing|https://bitping.com/earn"
           )
 
           get_remote_version() {
-            local img="$1"
             local json
-            json=$(curl -s "https://hub.docker.com/v2/repositories/$img/tags?page_size=25")
+            json=$(curl -s "https://hub.docker.com/v2/repositories/$1/tags?page_size=25")
             local tag
             tag=$(echo "$json" | jq -r '.results[].name' | grep -E '^(v?[0-9])' | grep -vE 'test|cache|staging' | sort -V | tail -n 1)
-            if [ -z "$tag" ]; then
-              tag=$(echo "$json" | jq -r '(.results[] | select(.name == "latest") | .last_updated[:10] | gsub("-"; ".")) // empty')
-            fi
+            [ -z "$tag" ] && tag=$(echo "$json" | jq -r '(.results[] | select(.name == "latest") | .last_updated[:10] | gsub("-"; ".")) // empty')
             echo "${tag:-unknown}"
           }
 
           UPDATED=""
+          RELEASE_BODY_FILE=$(mktemp)
 
-          for item in "${ADDONS[@]}"; do
-            set -- $item
-            addon=$1
-            img=$2
+          for entry in "${ADDONS[@]}"; do
+            IFS='|' read -r addon img name url <<< "$entry"
 
             cfg="$addon/config.yaml"
             [ ! -f "$cfg" ] && cfg="$addon/config.yml"
@@ -77,17 +74,22 @@ jobs:
               yq -i ".version = \"$remote_ver\"" "$cfg"
               echo "  → updated $local_ver → $remote_ver"
               UPDATED="$UPDATED $addon"
+              echo "- Bumped [${name}](${url}) to \`${remote_ver}\` (from \`${local_ver}\`)" >> "$RELEASE_BODY_FILE"
             fi
           done
 
           UPDATED="${UPDATED# }"
           echo "updated=$UPDATED" >> "$GITHUB_OUTPUT"
 
-          # Auto-increment patch version for the repo tag
+          {
+            echo "release_body<<EOF"
+            cat "$RELEASE_BODY_FILE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
           LATEST_TAG=$(git tag -l | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)
           IFS='.' read -r major minor patch <<< "${LATEST_TAG:-0.0.0}"
-          NEW_TAG="$major.$minor.$((patch + 1))"
-          echo "new_tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
+          echo "new_tag=$major.$minor.$((patch + 1))" >> "$GITHUB_OUTPUT"
 
           if [ -n "$UPDATED" ]; then
             echo "commit_message=chore: update addon versions ($UPDATED)" >> "$GITHUB_OUTPUT"
@@ -110,4 +112,4 @@ jobs:
         with:
           tag_name: ${{ steps.check_update.outputs.new_tag }}
           name: ${{ steps.check_update.outputs.new_tag }}
-          generate_release_notes: true
+          body: ${{ steps.check_update.outputs.release_body }}
