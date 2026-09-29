@@ -2,7 +2,7 @@ name: "PacketStream"
 slug: "packetstream"
 description: "Earn passive income by sharing your unused bandwidth"
 image: packetstream/psclient
-version: "v2.4.3"
+version: "v2.5.0"
 init: false
 legacy: true
 arch:
