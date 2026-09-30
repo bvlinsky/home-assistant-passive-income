@@ -53,4 +53,10 @@ See `CONTRIBUTING.md` and `AI_CONTRIBUTING.md` for contribution notes.
 
 ## ⭐️ Star History
 
-[![Star History Chart](https://api.star-history.com/chart?repos=bvlinsky/home-assistant-passive-income&type=date&releases=&legend=bottom-right)](https://www.star-history.com/?repos=bvlinsky%2Fhome-assistant-passive-income&type=date&releases=&legend=bottom-right)
+<a href="https://www.star-history.com/?repos=bvlinsky%2Fhome-assistant-passive-income&type=date&releases=&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=bvlinsky/home-assistant-passive-income&type=date&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=bvlinsky/home-assistant-passive-income&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=bvlinsky/home-assistant-passive-income&type=date&legend=bottom-right" />
+ </picture>
+</a>
