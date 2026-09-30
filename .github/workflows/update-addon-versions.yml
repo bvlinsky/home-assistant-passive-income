@@ -2,7 +2,8 @@ name: Check and bump addon versions
 
 on:
   schedule:
-    - cron: '0 4 * * *'
+    - cron: '0 18 * * *'
+      timezone: 'Europe/Warsaw'
   workflow_dispatch:
 
 permissions:
