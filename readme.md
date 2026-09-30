@@ -50,3 +50,7 @@ Contributions from all sources are welcome, including AI-assisted and automated 
 If something feels off or could be better, open a short issue or submit a pull request.
 
 See `CONTRIBUTING.md` and `AI_CONTRIBUTING.md` for contribution notes.
+
+## ⭐️ Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=bvlinsky/home-assistant-passive-income&type=date&releases=&legend=bottom-right)](https://www.star-history.com/?repos=bvlinsky%2Fhome-assistant-passive-income&type=date&releases=&legend=bottom-right)
