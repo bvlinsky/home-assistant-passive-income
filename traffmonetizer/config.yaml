@@ -11,5 +11,5 @@ options:
   token: ""
   device_name: "HomeAssistant"
 schema:
-  token: str
+  token: password
   device_name: str

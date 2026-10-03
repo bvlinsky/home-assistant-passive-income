@@ -73,7 +73,9 @@ jobs:
               continue
             fi
 
-            if [ "$local_ver" != "$remote_ver" ]; then
+            # Never downgrade an add-on: local versions can include a fix newer
+            # than the last published upstream Docker image.
+            if [ "$(printf '%s\n' "$local_ver" "$remote_ver" | sort -V | tail -n 1)" = "$remote_ver" ] && [ "$local_ver" != "$remote_ver" ]; then
               yq -i ".version = \"$remote_ver\"" "$cfg"
 
               # Sync Dockerfile image tag — only when the image is already pinned
