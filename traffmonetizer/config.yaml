@@ -1,16 +1,15 @@
 name: "Traffmonetizer"
 slug: "traffmonetizer"
 description: "Share your internet connection and make money online"
-version: "2026.02.27"
+version: "2026.10.03"
 init: false
 legacy: true
 arch:
   - amd64
   - aarch64
-  - armv7
 options:
   token: ""
   device_name: "HomeAssistant"
 schema:
-  token: str
+  token: password
   device_name: str

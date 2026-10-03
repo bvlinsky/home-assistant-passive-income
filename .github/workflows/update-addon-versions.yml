@@ -48,9 +48,20 @@ jobs:
           get_remote_version() {
             local json
             json=$(curl -s "https://hub.docker.com/v2/repositories/$1/tags?page_size=25")
+            local tags
+            tags=$(echo "$json" | jq -r '.results[].name')
+            # Only select stable numeric tags. A prerelease like 1.2.3-rc.1
+            # sorts after 1.2.3 with sort -V, although it is older in SemVer.
+            local stable_pattern='^v?[0-9]+(\.[0-9]+)*$'
+            # BitPing uses numeric -N package revisions as stable releases.
+            [ "$1" = "bitping/bitpingd" ] && stable_pattern='^v?[0-9]+(\.[0-9]+)*(-[0-9]+)?$'
             local tag
-            tag=$(echo "$json" | jq -r '.results[].name' | grep -E '^(v?[0-9])' | grep -vE 'test|cache|staging' | sort -V | tail -n 1)
-            [ -z "$tag" ] && tag=$(echo "$json" | jq -r '(.results[] | select(.name == "latest") | .last_updated[:10] | gsub("-"; ".")) // empty')
+            tag=$(printf '%s\n' "$tags" | grep -E "$stable_pattern" | sort -V | tail -n 1) || true
+            # Only use the calendar-date fallback for unversioned images.
+            # A repository with only prerelease numeric tags must be skipped.
+            if [ -z "$tag" ] && ! printf '%s\n' "$tags" | grep -Eq '^v?[0-9]'; then
+              tag=$(echo "$json" | jq -r '(.results[] | select(.name == "latest") | .last_updated[:10] | gsub("-"; ".")) // empty')
+            fi
             echo "${tag:-unknown}"
           }
 
@@ -73,7 +84,9 @@ jobs:
               continue
             fi
 
-            if [ "$local_ver" != "$remote_ver" ]; then
+            # Never downgrade an add-on: local versions can include a fix newer
+            # than the last published upstream Docker image.
+            if [ "$(printf '%s\n' "$local_ver" "$remote_ver" | sort -V | tail -n 1)" = "$remote_ver" ] && [ "$local_ver" != "$remote_ver" ]; then
               yq -i ".version = \"$remote_ver\"" "$cfg"
 
               # Sync Dockerfile image tag — only when the image is already pinned
