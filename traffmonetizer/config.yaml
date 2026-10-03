@@ -7,7 +7,6 @@ legacy: true
 arch:
   - amd64
   - aarch64
-  - armv7
 options:
   token: ""
   device_name: "HomeAssistant"
