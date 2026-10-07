@@ -79,7 +79,7 @@ jobs:
               # Sync Dockerfile image tag — only when the image is already pinned
               # (i.e. not :latest). CalVer addons using :latest are left untouched.
               dockerfile="$addon/Dockerfile"
-              if [ -f "$dockerfile" ] && grep -qE "(FROM|COPY --from)[[:space:]]+${img}:[^l]" "$dockerfile"; then
+              if [ -f "$dockerfile" ] && grep -qE "(FROM[[:space:]]+|COPY[[:space:]]+--from=)${img}:[^l]" "$dockerfile"; then
                 new_ver=$(yq '.version' "$cfg")
                 sed -i "s|\(COPY --from=${img}:\)[^ ]*|\1${new_ver}|g" "$dockerfile"
                 sed -i "s|\(FROM ${img}:\)[^ ]*|\1${new_ver}|g" "$dockerfile"
