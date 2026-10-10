@@ -2,7 +2,7 @@ name: "Bitping"
 slug: "bitping"
 description: "Earn money with your spare internet"
 image: bitping/bitpingd
-version: "26.8.17-1"
+version: "26.10.9-1"
 init: false
 legacy: true
 arch:
