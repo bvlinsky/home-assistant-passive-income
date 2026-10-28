@@ -1,7 +1,7 @@
 name: "EarnFM"
 slug: "earnfm"
 description: "Earn money online,passively."
-version: "2026.10.22"
+version: "2026.10.28"
 init: false
 legacy: true
 arch:
